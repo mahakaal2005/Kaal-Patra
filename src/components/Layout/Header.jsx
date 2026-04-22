@@ -27,6 +27,8 @@ const Header = ({ theme, toggleTheme }) => {
 
       <nav className="header-nav">
         <Link to="/" className="nav-link">Dashboard</Link>
+        <Link to="/commitments" className="nav-link">Commitments</Link>
+        <Link to="/community" className="nav-link">Community</Link>
         <Link to="/history" className="nav-link">Memory</Link>
       </nav>
 

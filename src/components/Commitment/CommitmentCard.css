@@ -1,19 +1,172 @@
-.commitment-card {
+/* ============================================================
+   CommitmentCard — Compact Summary Card
+   ============================================================ */
+
+/* ----- Compact card base ----- */
+.commitment-card-compact {
   display: flex;
   flex-direction: column;
-  padding: 1.5rem;
-  transition: transform 0.2s, box-shadow 0.2s;
-  height: 100%;
+  gap: 0.75rem;
+  padding: 1.25rem 1.25rem 1rem;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  position: relative;
+  outline: none;
 }
 
-.commitment-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+.commitment-card-compact:hover,
+.commitment-card-compact:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  border-color: var(--brand-primary);
 }
 
+.commitment-card-compact:active {
+  transform: translateY(-1px);
+}
+
+/* Top row */
+.ccc-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ccc-status {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+}
+
+.ccc-status.status--ok {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--success);
+}
+
+.ccc-status.status--checkin {
+  background: rgba(139, 92, 246, 0.12);
+  color: #a78bfa;
+}
+
+.ccc-status.status--pending {
+  background: rgba(225, 29, 72, 0.12);
+  color: var(--danger);
+  animation: badge-pulse 2s infinite;
+}
+
+@keyframes badge-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.55; }
+}
+
+/* Goal */
+.ccc-goal {
+  font-size: 1.05rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+  /* clamp to 2 lines max */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Sacrifice */
+.ccc-sacrifice {
+  font-size: 0.825rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ccc-label {
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  margin-right: 0.25rem;
+}
+
+/* Stakes pills */
+.ccc-stakes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.ccc-pill {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+.ccc-pill--fail { background: rgba(225, 29, 72, 0.08); color: var(--danger); }
+.ccc-pill--win  { background: rgba(16, 185, 129, 0.08); color: var(--success); }
+
+/* Footer */
+.ccc-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.ccc-mini-countdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.ccc-countdown-val {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.ccc-countdown-lbl {
+  font-size: 0.67rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ccc-judgment-cta {
+  font-size: 0.8rem;
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.ccc-arrow {
+  font-size: 1rem;
+  color: var(--text-muted);
+  transition: transform 0.2s, color 0.2s;
+}
+
+.commitment-card-compact:hover .ccc-arrow,
+.commitment-card-compact:focus-visible .ccc-arrow {
+  transform: translateX(4px);
+  color: var(--brand-primary);
+}
+
+/* Pending glow */
 @keyframes pulse-border {
-  0% { box-shadow: 0 0 0 0 var(--glow-danger); border-color: var(--danger); }
-  70% { box-shadow: 0 0 0 10px rgba(230, 57, 70, 0); border-color: var(--danger); }
+  0%   { box-shadow: 0 0 0 0 var(--glow-danger); border-color: var(--danger); }
+  70%  { box-shadow: 0 0 0 10px rgba(230, 57, 70, 0); border-color: var(--danger); }
   100% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0); border-color: var(--border-subtle); }
 }
 
@@ -22,334 +175,23 @@
   background: linear-gradient(145deg, rgba(230, 57, 70, 0.05) 0%, var(--bg-surface) 100%);
 }
 
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
+/* Needs check-in */
+.commitment-card-compact.needs-checkin {
+  border-color: rgba(139, 92, 246, 0.4);
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.1);
 }
 
-.status-badge {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 600;
-  color: var(--text-secondary);
-  background: var(--bg-primary);
-  padding: 0.25rem 0.5rem;
+/* Light-theme overrides */
+[data-theme='light'] .commitment-card-compact {
   border-radius: 4px;
 }
 
-.pending-glow .status-badge {
-  color: var(--danger);
-  background: rgba(230, 57, 70, 0.1);
-}
-
-.card-body h4 {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  margin-top: 1rem;
-}
-
-.card-primary-text {
-  font-size: 1.1rem;
-  color: var(--text-primary);
-  font-weight: 500;
-  margin-top: 0.25rem;
-}
-
-.card-secondary-text {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  margin-top: 0.25rem;
-}
-
-.stakes-box {
-  margin-top: 1rem;
-  padding: 0.75rem;
-  background: var(--bg-primary);
-  border-radius: 6px;
-  font-size: 0.85rem;
-}
-
-.stake-label.danger { color: var(--danger); font-weight: 600; }
-.stake-label.success { color: var(--success); font-weight: 600; }
-
-.card-footer {
-  margin-top: auto;
-  padding-top: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.time-info {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-.btn-judge-now {
-  background: var(--danger);
-  color: white;
-  padding: 0.75rem;
-  border-radius: 8px;
-  font-weight: 600;
-  text-transform: uppercase;
-  transition: background 0.2s;
-}
-
-.btn-judge-now:hover {
-  background: #c32d39;
-}
-
+/* Delete button */
 .btn-delete {
-  font-size: 1.2rem;
-  opacity: 0.5;
+  font-size: 1rem;
+  opacity: 0.4;
   transition: opacity 0.2s;
-}
-.btn-delete:hover { opacity: 1; }
-
-.live-countdown {
-  background: rgba(20, 22, 28, 0.5);
-  border-radius: 8px;
-  padding: 1rem;
-  border-top: 1px solid var(--border-subtle);
-  margin-top: 0.5rem;
-}
-
-.countdown-title {
-  font-size: 0.75rem;
-  color: var(--accent-purple);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 0.75rem;
-}
-
-.countdown-boxes {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.time-box {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-strong);
-  border-radius: 8px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem 0.25rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-.time-val {
-  font-family: 'Fira Code', monospace;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--text-primary);
+  padding: 0;
   line-height: 1;
 }
-
-.time-lbl {
-  font-size: 0.6rem;
-  color: var(--text-muted);
-  margin-top: 0.25rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.time-info-date {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-/* Daily Progress Roadmap Styles */
-.roadmap-container {
-  margin-top: 1.5rem;
-  padding: 1.25rem;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
-  border: 1px solid var(--border-subtle);
-  position: relative;
-  overflow: hidden;
-}
-
-.roadmap-container::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent-purple), transparent);
-  opacity: 0.5;
-}
-
-.roadmap-container h4 {
-  margin-top: 0;
-  color: var(--text-primary);
-  font-size: 0.85rem;
-  letter-spacing: 0.05em;
-  margin-bottom: 1rem;
-}
-
-.roadmap-empty {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  font-style: italic;
-  text-align: center;
-  padding: 1rem 0;
-}
-
-.roadmap-visual {
-  width: 100%;
-  overflow-x: auto;
-  padding-bottom: 0.5rem;
-  margin-bottom: 1rem;
-}
-.roadmap-visual::-webkit-scrollbar {
-  height: 4px;
-}
-.roadmap-visual::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
-  border-radius: 4px;
-}
-
-.roadmap-stepper {
-  display: flex;
-  align-items: center;
-  min-width: min-content;
-}
-
-.roadmap-step {
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-.step-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--bg-surface);
-  border: 2px solid var(--border-strong);
-  z-index: 2;
-  transition: all 0.3s ease;
-}
-
-.step-dot.filled {
-  background: var(--success);
-  border-color: var(--success);
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
-}
-
-.step-dot.done {
-  background: var(--success);
-  border-color: var(--success);
-}
-
-.step-dot.pulse {
-  background: var(--accent-purple);
-  border-color: var(--accent-purple);
-  animation: visual-pulse 1.5s infinite;
-}
-
-@keyframes visual-pulse {
-  0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7); }
-  70% { box-shadow: 0 0 0 8px rgba(139, 92, 246, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
-}
-
-.step-line {
-  height: 2px;
-  width: 30px;
-  background: var(--border-strong);
-  z-index: 1;
-}
-
-.step-line.joined {
-  background: var(--success);
-}
-
-.latest-log {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  background: var(--bg-primary);
-  padding: 0.75rem;
-  border-radius: 6px;
-  border-left: 3px solid var(--success);
-  margin-bottom: 1rem;
-}
-
-.latest-log strong {
-  color: var(--text-primary);
-}
-
-.daily-checkin-box {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  animation: slideUpFade 0.4s ease forwards;
-}
-
-@keyframes slideUpFade {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.checkin-input {
-  flex: 1;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-subtle);
-  border-radius: 6px;
-  padding: 0.75rem;
-  color: var(--text-primary);
-  font-size: 0.9rem;
-  transition: all 0.2s;
-}
-
-.checkin-input:focus {
-  outline: none;
-  border-color: var(--accent-purple);
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
-}
-
-[data-theme='light'] .checkin-input {
-  background: #f9fafb;
-  border-color: #d1d5db;
-}
-[data-theme='light'] .checkin-input:focus {
-  background: #fff;
-  border-color: #8b5cf6;
-}
-
-.btn-checkin {
-  background: var(--accent-purple);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 0 1.25rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
-}
-
-.btn-checkin:hover {
-  background: #7c3aed;
-}
-
-.btn-checkin:active {
-  transform: scale(0.95);
-}
-
-.commitment-card.needs-checkin {
-  border: 1px solid rgba(139, 92, 246, 0.5);
-  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.15);
-}
+.btn-delete:hover { opacity: 1; }

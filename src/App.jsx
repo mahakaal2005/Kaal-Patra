@@ -6,6 +6,9 @@ import Footer from './components/Layout/Footer';
 import AuthPage from './pages/AuthPage';
 import DashboardPage from './pages/DashboardPage';
 import HistoryPage from './pages/HistoryPage';
+import CommitmentsPage from './pages/CommitmentsPage';
+import CommitmentDetailPage from './pages/CommitmentDetailPage';
+import CommunityPage from './pages/CommunityPage';
 import './App.css';
 
 // Protected Route Component (Unit 3 - Functional Components)
@@ -71,6 +74,30 @@ function App() {
             element={
               <ProtectedRoute>
                 <HistoryPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/commitments" 
+            element={
+              <ProtectedRoute>
+                <CommitmentsPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/commitments/:id" 
+            element={
+              <ProtectedRoute>
+                <CommitmentDetailPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/community" 
+            element={
+              <ProtectedRoute>
+                <CommunityPage />
               </ProtectedRoute>
             } 
           />
