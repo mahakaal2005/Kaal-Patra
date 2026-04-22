@@ -1,0 +1,124 @@
+/* ============================================================
+   AICoachCard — Groq-powered motivational message
+   ============================================================ */
+
+.ai-coach-card {
+  padding: 1.25rem 1.5rem;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.06) 0%, rgba(59, 130, 246, 0.06) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  position: relative;
+  overflow: hidden;
+  animation: coachSlideIn 0.4s ease;
+}
+
+@keyframes coachSlideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Glowing left accent bar */
+.ai-coach-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, #10b981, #3b82f6);
+  border-radius: 2px 0 0 2px;
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+.ai-coach-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.9rem;
+}
+
+.ai-coach-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.ai-coach-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #10b981;
+}
+
+.ai-coach-badge {
+  margin-left: auto;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  background: var(--bg-elevated);
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+}
+
+/* ── Message ─────────────────────────────────────────────── */
+.ai-coach-message {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  line-height: 1.65;
+  font-style: italic;
+}
+
+/* ── Shimmer loading state ───────────────────────────────── */
+.ai-coach--loading {
+  border-color: rgba(139, 92, 246, 0.2);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.04) 0%, rgba(59, 130, 246, 0.04) 100%);
+}
+
+.ai-coach--loading::before {
+  background: linear-gradient(180deg, #7c3aed, #3b82f6);
+  animation: barPulse 1.5s ease infinite;
+}
+
+@keyframes barPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+.ai-coach-shimmer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.shimmer-line {
+  height: 14px;
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    var(--bg-elevated) 25%,
+    var(--bg-surface-hover) 50%,
+    var(--bg-elevated) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmerMove 1.4s linear infinite;
+}
+
+.shimmer-line--lg { width: 100%; }
+.shimmer-line--md { width: 80%; }
+.shimmer-line--sm { width: 55%; }
+
+@keyframes shimmerMove {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Error state ─────────────────────────────────────────── */
+.ai-coach--error {
+  border-color: rgba(225, 29, 72, 0.25);
+  background: rgba(225, 29, 72, 0.04);
+}
+.ai-coach--error::before {
+  background: var(--danger);
+}
+
+.ai-coach-error-text {
+  font-size: 0.85rem;
+  color: var(--danger);
+}

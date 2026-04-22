@@ -1,0 +1,462 @@
+/* ============================================================
+   CommitmentDetailPage
+   ============================================================ */
+
+.cdp {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 5rem;
+  animation: pageSlideIn 0.3s ease;
+}
+
+@keyframes pageSlideIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Top bar ─────────────────────────────────────────────── */
+.cdp-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.cdp-back-btn {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 0.45rem 1rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  background: var(--bg-surface);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.cdp-back-btn:hover {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+}
+
+.cdp-delete-btn {
+  font-size: 0.875rem;
+  color: var(--danger);
+  padding: 0.45rem 1rem;
+  border: 1px solid rgba(225, 29, 72, 0.3);
+  border-radius: 8px;
+  background: rgba(225, 29, 72, 0.06);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.cdp-delete-btn:hover {
+  background: rgba(225, 29, 72, 0.15);
+}
+
+/* ── Header panel ────────────────────────────────────────── */
+.cdp-header {
+  padding: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.cdp-header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--brand-primary), #f43f5e, var(--warning));
+}
+
+.cdp-header-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.cdp-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+}
+.badge--ok      { background: rgba(16,185,129,0.12); color: var(--success); }
+.badge--checkin { background: rgba(139,92,246,0.12); color: #a78bfa; }
+.badge--pending { background: rgba(225,29,72,0.12); color: var(--danger); }
+
+.cdp-created {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.cdp-goal {
+  font-size: 1.85rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.03em;
+  line-height: 1.3;
+  margin-bottom: 0.75rem;
+}
+
+.cdp-sacrifice-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.cdp-field-lbl {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.cdp-sacrifice-val {
+  font-size: 0.975rem;
+  color: var(--text-secondary);
+}
+
+/* Time progress bar */
+.cdp-time-bar {
+  margin-top: 1.5rem;
+}
+
+.cdp-time-bar-track {
+  height: 6px;
+  background: var(--bg-elevated);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.cdp-time-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--brand-primary), var(--warning));
+  transition: width 1s linear;
+}
+
+.cdp-time-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+/* ── Body grid ───────────────────────────────────────────── */
+.cdp-body {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+/* ── Aside cards ─────────────────────────────────────────── */
+.cdp-card {
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.cdp-card:last-child { margin-bottom: 0; }
+
+.cdp-card-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+/* Stakes */
+.cdp-stake {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  border-radius: 10px;
+  margin-bottom: 0.75rem;
+}
+.cdp-stake:last-child { margin-bottom: 0; }
+
+.cdp-stake--fail { background: rgba(225,29,72,0.07); }
+.cdp-stake--win  { background: rgba(16,185,129,0.07); }
+
+.cdp-stake-icon { font-size: 1.25rem; }
+.cdp-stake-lbl  {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+.cdp-stake-val {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  font-weight: 500;
+  margin-top: 0.15rem;
+}
+
+/* Countdown */
+.cdp-countdown-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.cdp-time-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 0.65rem 0.25rem;
+}
+
+.cdp-time-val {
+  font-family: 'Fira Code', monospace;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.cdp-time-lbl {
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+.cdp-unlock-date {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+/* Judgment CTA */
+.cdp-judgment-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: center;
+}
+.cdp-judgment-icon { font-size: 2.5rem; }
+.cdp-judgment-block h3 {
+  font-size: 1.1rem;
+  color: var(--danger);
+}
+.cdp-judgment-block p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.cdp-btn-judge {
+  width: 100%;
+  padding: 0.85rem;
+  background: var(--danger);
+  color: #fff;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: background 0.2s, transform 0.15s;
+}
+.cdp-btn-judge:hover { background: #be123c; transform: translateY(-1px); }
+
+/* ── Main — Check-in + Journey ───────────────────────────── */
+.cdp-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.cdp-checkin-card {
+  padding: 1.5rem;
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  animation: slideIn 0.35s ease;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.cdp-checkin-hint {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.cdp-checkin-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.cdp-checkin-input {
+  flex: 1;
+  resize: none;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+.cdp-checkin-input:focus {
+  outline: none;
+  border-color: #a78bfa;
+  box-shadow: 0 0 0 2px rgba(139,92,246,0.2);
+}
+
+.cdp-btn-log {
+  padding: 0.75rem 1.5rem;
+  background: #7c3aed;
+  color: #fff;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+.cdp-btn-log:hover { background: #6d28d9; }
+
+/* Journey */
+.cdp-journey-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.cdp-journey-count {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  background: var(--bg-elevated);
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+}
+
+.cdp-journey-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2.5rem 0;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+.cdp-journey-empty span { font-size: 2rem; }
+
+/* Timeline */
+.cdp-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.cdp-timeline-entry {
+  display: flex;
+  gap: 1rem;
+  position: relative;
+  padding-bottom: 1.25rem;
+}
+
+.cdp-timeline-entry:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 14px;
+  width: 2px;
+  height: calc(100% - 14px);
+  background: var(--border-subtle);
+}
+
+.cdp-tl-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--success);
+  border: 2px solid var(--success);
+  box-shadow: 0 0 8px rgba(16,185,129,0.4);
+  flex-shrink: 0;
+  margin-top: 3px;
+  position: relative;
+  z-index: 1;
+}
+
+.cdp-tl-content {
+  flex: 1;
+}
+
+.cdp-tl-date {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  margin-bottom: 0.2rem;
+}
+
+.cdp-tl-log {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+/* ── Loading / not found ─────────────────────────────────── */
+.cdp-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 6rem;
+  color: var(--text-secondary);
+}
+
+.cdp-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border-subtle);
+  border-top-color: var(--brand-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.cdp-not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 6rem;
+}
+
+/* Pending glow */
+@keyframes pulse-border {
+  0%   { box-shadow: 0 0 0 0 var(--glow-danger); border-color: var(--danger); }
+  70%  { box-shadow: 0 0 0 12px rgba(230,57,70,0); }
+  100% { box-shadow: 0 0 0 0 rgba(230,57,70,0); }
+}
+.pending-glow {
+  animation: pulse-border 2s infinite;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .cdp-body {
+    grid-template-columns: 1fr;
+  }
+  .cdp-goal { font-size: 1.4rem; }
+}

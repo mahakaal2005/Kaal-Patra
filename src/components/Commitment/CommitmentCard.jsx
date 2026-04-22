@@ -1,163 +1,100 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
-import { updateCommitment } from '../../features/commitments/commitmentsSlice';
-import { useAuth } from '../../context/AuthContext';
-import { formatDateTime, getDetailedTimeRemaining } from '../../utils/timeUtils';
+import { useNavigate } from 'react-router-dom';
+import { getDetailedTimeRemaining } from '../../utils/timeUtils';
 import './CommitmentCard.css';
 
-const CommitmentCard = ({ commitment, onJudgeRequest, onDelete }) => {
-  const { status, goal, sacrifice, deadline, penalty, reward, progressLogs = [], createdAt } = commitment;
+const CommitmentCard = ({ commitment, onDelete }) => {
+  const { status, goal, sacrifice, deadline, penalty, reward, progressLogs = [] } = commitment;
+  const navigate = useNavigate();
 
-  const dispatch = useDispatch();
-  const { user } = useAuth();
-  
   const isPending = status === 'pending_judgment';
+  const todayDateStr = new Date().toISOString().split('T')[0];
+  const isCheckInRequired =
+    !isPending && (!commitment.lastLoggedDate || commitment.lastLoggedDate !== todayDateStr);
 
   const [timeLeft, setTimeLeft] = useState(() => getDetailedTimeRemaining(deadline));
-  const [dailyLog, setDailyLog] = useState('');
-  
-  const todayDateStr = new Date().toISOString().split('T')[0];
-  const isCheckInRequired = !isPending && (!commitment.lastLoggedDate || commitment.lastLoggedDate !== todayDateStr);
-
-  const handleLogProgress = async () => {
-    if (!dailyLog.trim()) return;
-
-    const updatedLogs = [...progressLogs, { date: todayDateStr, log: dailyLog.trim() }];
-    
-    try {
-      await dispatch(updateCommitment({
-        uid: user.uid,
-        commitmentId: commitment.id,
-        updates: {
-          progressLogs: updatedLogs,
-          lastLoggedDate: todayDateStr
-        }
-      })).unwrap();
-      setDailyLog('');
-    } catch (error) {
-      console.error('Failed to log daily progress:', error);
-    }
-  };
 
   useEffect(() => {
     if (isPending) return;
-
     const interval = setInterval(() => {
-      const remaining = getDetailedTimeRemaining(deadline);
-      setTimeLeft(remaining);
-      
-      // If it just unlocked, you might want to call onJudgeRequest to pop it immediately,
-      // but the CommitmentList handles the state migration already.
+      setTimeLeft(getDetailedTimeRemaining(deadline));
     }, 1000);
-
     return () => clearInterval(interval);
   }, [deadline, isPending]);
 
+  const handleCardClick = () => {
+    navigate(`/commitments/${commitment.id}`);
+  };
+
+  const handleDelete = (e) => {
+    e.stopPropagation(); // don't navigate when deleting
+    e.preventDefault();  // don't scroll on Space key
+    onDelete(commitment.id); // confirmation lives in the parent (CommitmentsPage)
+  };
+
+  /* Derive a short status label + colour class */
+  const statusInfo = isPending
+    ? { label: '⚠️ Judgment Due', cls: 'status--pending' }
+    : isCheckInRequired
+    ? { label: '🚨 Check-in Required', cls: 'status--checkin' }
+    : { label: '✅ On Track', cls: 'status--ok' };
+
   return (
-    <div className={`glass-panel commitment-card ${isPending ? 'pending-glow' : ''} ${isCheckInRequired ? 'needs-checkin' : ''}`}>
-      <div className="card-header">
-        <span className="status-badge">
-          {isPending ? '⚠️ Unlocked - Judgment Required' : (isCheckInRequired ? '🚨 Check-in Required!' : '✅ Check-in Complete')}
-        </span>
+    <div
+      className={`commitment-card-compact glass-panel ${isPending ? 'pending-glow' : ''} ${isCheckInRequired ? 'needs-checkin' : ''}`}
+      onClick={handleCardClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        // Activate on Enter or Space; ignore events from interactive children
+        if (e.target !== e.currentTarget) return;
+        if (e.key === 'Enter') { handleCardClick(); }
+        if (e.key === ' ')     { e.preventDefault(); handleCardClick(); }
+      }}
+      aria-label={`View commitment: ${goal}`}
+    >
+      {/* Top row */}
+      <div className="ccc-top">
+        <span className={`ccc-status ${statusInfo.cls}`}>{statusInfo.label}</span>
         {status === 'locked' && (
-          <button className="btn-delete" onClick={() => onDelete(commitment.id)}>🗑️</button>
-        )}
-      </div>
-
-      <div className="card-body">
-        <h4>Goal</h4>
-        <p className="card-primary-text">{goal}</p>
-        
-        <h4>Sacrifice</h4>
-        <p className="card-secondary-text">{sacrifice}</p>
-
-        {(penalty || reward) && (
-          <div className="stakes-box">
-            {penalty && <div><span className="stake-label danger">If fail:</span> {penalty}</div>}
-            {reward && <div><span className="stake-label success">If win:</span> {reward}</div>}
-          </div>
-        )}
-
-        {/* Visual Progress Roadmap */}
-        {!isPending && (
-          <div className="roadmap-container">
-            <h4>Journey Map</h4>
-            <div className="roadmap-visual">
-              {progressLogs.length === 0 ? (
-                <p className="roadmap-empty">No progress logged yet. Take your first step today!</p>
-              ) : (
-                <div className="roadmap-stepper">
-                  {progressLogs.map((log, idx) => (
-                    <div key={idx} className="roadmap-step" title={`${log.date}: ${log.log}`}>
-                      <div className="step-dot filled"></div>
-                      <div className="step-line joined"></div>
-                    </div>
-                  ))}
-                  <div className="roadmap-step current-step">
-                    <div className={`step-dot ${isCheckInRequired ? 'pulse' : 'done'}`}></div>
-                  </div>
-                </div>
-              )}
-            </div>
-            {progressLogs.length > 0 && (
-              <div className="latest-log">
-                <strong>Latest log:</strong> {progressLogs[progressLogs.length - 1].log}
-              </div>
-            )}
-            
-            {isCheckInRequired && (
-              <div className="daily-checkin-box">
-                <input 
-                  type="text" 
-                  className="checkin-input" 
-                  placeholder="What did you do today to get closer?"
-                  value={dailyLog}
-                  onChange={(e) => setDailyLog(e.target.value)}
-                />
-                <button className="btn-checkin" onClick={handleLogProgress}>Log</button>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      <div className="card-footer">
-        {!isPending && (
-          <div className="live-countdown">
-            <h5 className="countdown-title">⏳ UNLOCKS IN</h5>
-            <div className="countdown-boxes">
-              <div className="time-box">
-                <span className="time-val">{String(timeLeft.days).padStart(2, '0')}</span>
-                <span className="time-lbl">DAYS</span>
-              </div>
-              <div className="time-box">
-                <span className="time-val">{String(timeLeft.hours).padStart(2, '0')}</span>
-                <span className="time-lbl">HRS</span>
-              </div>
-              <div className="time-box">
-                <span className="time-val">{String(timeLeft.minutes).padStart(2, '0')}</span>
-                <span className="time-lbl">MIN</span>
-              </div>
-              <div className="time-box">
-                <span className="time-val">{String(timeLeft.seconds).padStart(2, '0')}</span>
-                <span className="time-lbl">SEC</span>
-              </div>
-            </div>
-            <div className="time-info-date">
-              📅 on {formatDateTime(deadline)}
-            </div>
-          </div>
-        )}
-        
-        {isPending && (
-          <button 
-            className="btn-judge-now" 
-            onClick={() => onJudgeRequest(commitment)}
-          >
-            Face Your Judgment
+          <button className="btn-delete" onClick={handleDelete} aria-label="Delete commitment">
+            🗑️
           </button>
         )}
+      </div>
+
+      {/* Goal */}
+      <h3 className="ccc-goal">{goal}</h3>
+
+      {/* Sacrifice */}
+      <p className="ccc-sacrifice">
+        <span className="ccc-label">Sacrifice:</span> {sacrifice}
+      </p>
+
+      {/* Stakes pills */}
+      {(penalty || reward) && (
+        <div className="ccc-stakes">
+          {penalty && <span className="ccc-pill ccc-pill--fail">❌ {penalty}</span>}
+          {reward && <span className="ccc-pill ccc-pill--win">🏆 {reward}</span>}
+        </div>
+      )}
+
+      {/* Footer — countdown OR pending CTA */}
+      <div className="ccc-footer">
+        {isPending ? (
+          <span className="ccc-judgment-cta">Tap to face your judgment →</span>
+        ) : (
+          <div className="ccc-mini-countdown">
+            <span className="ccc-countdown-val">
+              {String(timeLeft.days).padStart(2, '0')}d{' '}
+              {String(timeLeft.hours).padStart(2, '0')}h{' '}
+              {String(timeLeft.minutes).padStart(2, '0')}m
+            </span>
+            <span className="ccc-countdown-lbl">remaining · {progressLogs.length} logs</span>
+          </div>
+        )}
+        <span className="ccc-arrow">→</span>
       </div>
     </div>
   );
@@ -165,7 +102,6 @@ const CommitmentCard = ({ commitment, onJudgeRequest, onDelete }) => {
 
 CommitmentCard.propTypes = {
   commitment: PropTypes.object.isRequired,
-  onJudgeRequest: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
 };
 
