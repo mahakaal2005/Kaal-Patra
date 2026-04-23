@@ -11,7 +11,7 @@ import { selectDerivedStats } from '../features/stats/statsSlice';
 import JudgmentModal from '../components/Commitment/JudgmentModal';
 import AICoachCard from '../components/Commitment/AICoachCard';
 import { getAICoachMessage } from '../services/groqService';
-import { formatDateTime, getDetailedTimeRemaining } from '../utils/timeUtils';
+import { formatDateTime, getDetailedTimeRemaining, getConsecutiveDayStreak } from '../utils/timeUtils';
 import './CommitmentDetailPage.css';
 
 const CommitmentDetailPage = () => {
@@ -98,7 +98,7 @@ const CommitmentDetailPage = () => {
       ).unwrap();
       setDailyLog('');
 
-      // 🤖 Trigger AI Coach after successful log
+      // 🤖 Trigger AI Spark after successful log
       const daysRemaining = Math.max(
         0,
         Math.ceil((new Date(deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
@@ -106,6 +106,9 @@ const CommitmentDetailPage = () => {
       setAiLoading(true);
       setAiError(null);
       setAiMessage(null);
+      // Bust any cached response so the updated prompt style takes effect
+      const today = new Date().toISOString().split('T')[0];
+      try { localStorage.removeItem(`ai_coach_${user.uid}_${id}_${today}`); } catch { /* ignore */ }
       try {
         const msg = await getAICoachMessage({
           uid: user.uid,
@@ -118,11 +121,12 @@ const CommitmentDetailPage = () => {
         });
         setAiMessage(msg);
       } catch (aiErr) {
-        setAiError('Could not reach AI Coach right now. Try again later.');
+        setAiError('Could not reach AI right now. Try again later.');
         console.error('Groq error:', aiErr);
       } finally {
         setAiLoading(false);
       }
+
     } catch (err) {
       console.error('Failed to log progress:', err);
     }
@@ -176,6 +180,17 @@ const CommitmentDetailPage = () => {
               ? '🚨 Check-in Required'
               : '✅ On Track'}
           </span>
+
+          {/* Per-commitment daily streak badge */}
+          {(() => {
+            const commitStreak = getConsecutiveDayStreak(progressLogs);
+            return commitStreak > 0 ? (
+              <span className="cdp-streak-badge">
+                🔥 {commitStreak}-day run
+              </span>
+            ) : null;
+          })()}
+
           {createdAt && (
             <span className="cdp-created">
               Forged on {formatDateTime(createdAt)}

@@ -25,6 +25,13 @@
   flex-wrap: wrap;
   position: relative;
   overflow: hidden;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  cursor: default;
+}
+
+.cm-hero:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.15);
 }
 
 .cm-hero::before {
@@ -173,16 +180,34 @@
 /* Row */
 .cm-row {
   border-bottom: 1px solid var(--border-subtle);
-  transition: background 0.15s;
+  transition: background 0.18s ease, transform 0.18s ease, padding-left 0.2s ease;
+  position: relative;
 }
 
 .cm-row:last-child { border-bottom: none; }
 
-.cm-row:hover { background: var(--bg-surface-hover); }
+.cm-row:hover {
+  background: var(--bg-surface-hover);
+  transform: translateX(4px);
+  padding-left: 1.6rem; /* subtle indent on hover */
+}
+
+.cm-row:hover .cm-col--name {
+  color: var(--brand-primary);
+}
+
+.cm-row:hover .cm-col--score {
+  color: #fb923c;
+}
 
 .cm-row--me {
   background: rgba(16, 185, 129, 0.04);
   border-color: rgba(16, 185, 129, 0.15);
+}
+
+.cm-row--me:hover {
+  background: rgba(16,185,129,0.08);
+  padding-left: 1.6rem;
 }
 
 .cm-row--podium .cm-col--rank {

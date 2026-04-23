@@ -40,29 +40,27 @@ const getCacheKey = (uid, commitmentId) => {
  * Build the prompt sent to the model.
  */
 const buildPrompt = ({ goal, sacrifice, progressLogs = [], integrityScore, daysRemaining }) => {
-  const recentLogs = progressLogs
-    .slice(-3)
-    .map((l) => `  - ${l.date}: "${l.log}"`)
-    .join('\n');
+  const lastLog = progressLogs.at(-1);
+  const lastEntry = lastLog ? `"${lastLog.log}" (logged on ${lastLog.date})` : 'no logs yet';
 
-  return `You are a brutally honest but motivating accountability coach for someone using an app called KaalPatra — a system that forces people to confront their commitments.
+  return `You are a master of motivational one-liners for a commitment-tracking app called KaalPatra.
 
-Here is what you know about this person's commitment:
-- Goal: "${goal}"
-- Sacrifice they made: "${sacrifice}"
-- Days remaining until deadline: ${daysRemaining}
-- Their current integrity score (% of promises kept overall): ${integrityScore}%
-- Their most recent progress logs:
-${recentLogs || '  (No logs yet — they just started)'}
+The user has committed to: "${goal}"
+What they gave up for it: "${sacrifice}"
+Days left until deadline: ${daysRemaining}
+Their integrity score (promises kept overall): ${integrityScore}%
+Their most recent log entry: ${lastEntry}
 
-Write a SHORT, personalized motivational message (2–3 sentences max). 
-Rules:
-- Reference their actual goal and recent logs — do NOT be generic
-- Be direct and honest. Not fluffy or corporate.
-- If their logs show slipping, call it out gently but firmly
-- End with a specific, actionable push for today
-- Do NOT use emojis or hashtags
-- Do NOT start with "I" or "You are"`;
+Write EXACTLY ONE short, punchy motivational quote or line (maximum 20 words) that:
+- Directly references their goal or sacrifice — not generic
+- Feels like a powerful daily mantra or battle cry
+- Is energising and forward-looking, NOT critical or analytical
+- Uses vivid language — strong verbs, sharp imagery
+- Does NOT use emojis, hashtags, or quotation marks
+- Does NOT start with "You" or "I"
+- Is a single sentence only — no explanations, no follow-up
+
+Output only the one line. Nothing else.`;
 };
 
 /**
@@ -108,8 +106,8 @@ export const getAICoachMessage = async ({
     body: JSON.stringify({
       model: GROQ_MODEL,
       messages: [{ role: 'user', content: prompt }],
-      max_tokens: 150,
-      temperature: 0.8,
+      max_tokens: 80,
+      temperature: 0.9,
     }),
   });
 

@@ -57,12 +57,32 @@
   border-radius: 999px;
 }
 
-/* ── Message ─────────────────────────────────────────────── */
-.ai-coach-message {
-  font-size: 0.95rem;
-  color: var(--text-primary);
-  line-height: 1.65;
+/* ── Message / Quote ─────────────────────────────────────── */
+.ai-coach-quote {
+  margin: 0;
+  padding: 0 0.5rem;
+  font-size: 1.05rem;
   font-style: italic;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.6;
+  text-align: center;
+  letter-spacing: 0.01em;
+  border: none;
+}
+
+.ai-coach-quote-mark {
+  font-size: 1.6rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 0;
+  vertical-align: -0.35em;
+  background: linear-gradient(135deg, #f59e0b, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0.15em;
+  user-select: none;
 }
 
 /* ── Shimmer loading state ───────────────────────────────── */

@@ -12,8 +12,8 @@ const AICoachCard = ({ message, isLoading, error }) => {
   return (
     <div className={`ai-coach-card ${isLoading ? 'ai-coach--loading' : ''} ${error ? 'ai-coach--error' : ''}`}>
       <div className="ai-coach-header">
-        <span className="ai-coach-icon">🤖</span>
-        <span className="ai-coach-label">AI Coach</span>
+        <span className="ai-coach-icon">✨</span>
+        <span className="ai-coach-label">Daily Spark</span>
         {!isLoading && !error && (
           <span className="ai-coach-badge">Powered by Groq · Llama 3</span>
         )}
@@ -23,7 +23,6 @@ const AICoachCard = ({ message, isLoading, error }) => {
         <div className="ai-coach-shimmer">
           <div className="shimmer-line shimmer-line--lg" />
           <div className="shimmer-line shimmer-line--md" />
-          <div className="shimmer-line shimmer-line--sm" />
         </div>
       )}
 
@@ -32,7 +31,11 @@ const AICoachCard = ({ message, isLoading, error }) => {
       )}
 
       {message && !isLoading && !error && (
-        <p className="ai-coach-message">{message}</p>
+        <blockquote className="ai-coach-quote">
+          <span className="ai-coach-quote-mark">"</span>
+          {message}
+          <span className="ai-coach-quote-mark">"</span>
+        </blockquote>
       )}
     </div>
   );
