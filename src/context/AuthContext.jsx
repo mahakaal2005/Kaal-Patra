@@ -8,7 +8,7 @@ import {
 import { auth } from '../firebase/config';
 import PropTypes from 'prop-types';
 import { store } from '../app/store';
-import { resetCommitments, hydrateFromCache } from '../features/commitments/commitmentsSlice';
+import { resetCommitments } from '../features/commitments/commitmentsSlice';
 
 const AuthContext = createContext();
 
@@ -38,11 +38,6 @@ export const AuthProvider = ({ children }) => {
       if (oldUid !== newUid) {
         store.dispatch(resetCommitments());
       }
-      
-      // Instantly load any locally cached data for this user
-      if (newUid) {
-        store.dispatch(hydrateFromCache(newUid));
-      }
 
       prevUidRef.current = newUid;
       setUser(currentUser);
@@ -56,7 +51,13 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {loading ? (
+        <div className="auth-loading-screen">
+          <div className="auth-spinner" />
+        </div>
+      ) : (
+        children
+      )}
     </AuthContext.Provider>
   );
 };

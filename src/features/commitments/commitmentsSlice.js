@@ -47,37 +47,16 @@ const commitmentsSlice = createSlice({
   reducers: {
     // Call this on logout to prevent stale data leaking into next session
     resetCommitments: () => initialState,
-    // Instantly loads data from local storage on login so the dashboard doesn't flash empty
-    hydrateFromCache: (state, action) => {
-      const uid = action.payload;
-      try {
-        const cached = localStorage.getItem(`kaalpatra_cache_${uid}`);
-        if (cached) {
-          state.items = JSON.parse(cached);
-          state.status = 'succeeded'; // Skips 'idle' so skeletons don't show
-        }
-      } catch (e) {
-        // ignore JSON parse errors
-      }
-    },
   },
   extraReducers: (builder) => {
     builder
       // Fetch
       .addCase(fetchCommitments.pending, (state) => {
-        // Only trigger skeleton loaders if we have NO data (e.g. first login on a new device)
-        if (state.items.length === 0) {
-          state.status = 'loading';
-        }
+        state.status = 'loading';
       })
       .addCase(fetchCommitments.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.items = action.payload;
-        // Save fresh data to local cache
-        try {
-          const uid = action.meta.arg; // The uid passed to fetchCommitments
-          localStorage.setItem(`kaalpatra_cache_${uid}`, JSON.stringify(action.payload));
-        } catch (e) {}
       })
       .addCase(fetchCommitments.rejected, (state, action) => {
         state.status = 'failed';
@@ -101,5 +80,5 @@ const commitmentsSlice = createSlice({
   }
 });
 
-export const { resetCommitments, hydrateFromCache } = commitmentsSlice.actions;
+export const { resetCommitments } = commitmentsSlice.actions;
 export default commitmentsSlice.reducer;
