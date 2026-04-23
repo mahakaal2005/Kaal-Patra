@@ -11,7 +11,7 @@ import { selectDerivedStats } from '../features/stats/statsSlice';
 import JudgmentModal from '../components/Commitment/JudgmentModal';
 import AICoachCard from '../components/Commitment/AICoachCard';
 import { getAICoachMessage } from '../services/groqService';
-import { formatDateTime, getDetailedTimeRemaining, getConsecutiveDayStreak } from '../utils/timeUtils';
+import { formatDateTime, getDetailedTimeRemaining } from '../utils/timeUtils';
 import './CommitmentDetailPage.css';
 
 const CommitmentDetailPage = () => {
@@ -176,17 +176,6 @@ const CommitmentDetailPage = () => {
               ? '🚨 Check-in Required'
               : '✅ On Track'}
           </span>
-
-          {/* Per-commitment daily streak badge */}
-          {(() => {
-            const commitStreak = getConsecutiveDayStreak(progressLogs);
-            return commitStreak > 0 ? (
-              <span className="cdp-streak-badge">
-                🔥 {commitStreak}-day run
-              </span>
-            ) : null;
-          })()}
-
           {createdAt && (
             <span className="cdp-created">
               Forged on {formatDateTime(createdAt)}

@@ -89,38 +89,3 @@ export const getDetailedTimeRemaining = (unlockAt) => {
   };
 };
 
-/**
- * Calculate the consecutive-day check-in streak for a single commitment.
- * Walks backward through progressLogs dates and counts how many consecutive
- * calendar days (ending today or yesterday) have at least one entry.
- * If today hasn't been logged yet the count starts from yesterday, so an
- * un-logged today doesn't immediately reset the streak.
- *
- * @param {Array<{date: string, log: string}>} progressLogs - any order
- * @returns {number} current consecutive-day streak
- */
-export const getConsecutiveDayStreak = (progressLogs = []) => {
-  if (!progressLogs.length) return 0;
-
-  // Unique YYYY-MM-DD strings for O(1) lookup
-  const loggedDates = new Set(progressLogs.map((e) => e.date));
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const todayStr = today.toISOString().split('T')[0];
-
-  // Start counting from today if logged, otherwise from yesterday
-  let cursor = loggedDates.has(todayStr)
-    ? new Date(today)
-    : new Date(today.getTime() - 86400000);
-
-  let streak = 0;
-  while (true) {
-    const dateStr = cursor.toISOString().split('T')[0];
-    if (!loggedDates.has(dateStr)) break;
-    streak++;
-    cursor = new Date(cursor.getTime() - 86400000); // step back one day
-  }
-
-  return streak;
-};

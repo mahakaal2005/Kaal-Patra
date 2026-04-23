@@ -40,17 +40,13 @@ export const IntegrityStreak = () => {
 
   return (
     <div className="glass-panel stats-panel">
-      <h3>Daily Streak</h3>
+      <h3>Current Streak</h3>
       <div className="streak-display">
         <span className="streak-icon">{streak > 0 ? '🔥' : '🧊'}</span>
         <span className="streak-value">{streak}</span>
       </div>
       <p className="streak-subtext">
-        {streak === 0
-          ? 'Log a check-in today to start your streak.'
-          : streak === 1
-          ? 'Day 1. Keep showing up.'
-          : `${streak} consecutive days checked in.`}
+        {streak === 0 ? "Your streak is broken. Start over." : "Consecutive promises kept."}
       </p>
     </div>
   );

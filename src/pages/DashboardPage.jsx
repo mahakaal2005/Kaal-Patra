@@ -1,24 +1,9 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useAuth } from '../context/AuthContext';
-import { fetchCommitments } from '../features/commitments/commitmentsSlice';
 import DailyAlertBanner from '../components/Dashboard/DailyAlertBanner';
 import CommitmentForm from '../components/Commitment/CommitmentForm';
 import { IntegrityScore, IntegrityStreak } from '../components/Dashboard/StatsComponents';
 import './DashboardPage.css';
 
 const DashboardPage = () => {
-  const dispatch = useDispatch();
-  const { user } = useAuth();
-  const status = useSelector((state) => state.commitments.status);
-
-  // Ensure commitments are loaded (stats including daily streak are derived from them)
-  useEffect(() => {
-    if (user && status === 'idle') {
-      dispatch(fetchCommitments(user.uid));
-    }
-  }, [user, status, dispatch]);
-
   return (
     <div className="page dashboard-page">
       <div className="dashboard-grid">
@@ -26,7 +11,7 @@ const DashboardPage = () => {
           <IntegrityScore />
           <IntegrityStreak />
         </aside>
-
+        
         <div className="dashboard-main">
           <DailyAlertBanner />
           <CommitmentForm />
