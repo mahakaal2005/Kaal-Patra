@@ -9,45 +9,20 @@
   gap: 0.75rem;
   padding: 1.25rem 1.25rem 1rem;
   cursor: pointer;
-  transition:
-    transform 0.22s cubic-bezier(0.34,1.28,0.64,1),
-    box-shadow 0.22s ease,
-    border-color 0.22s ease,
-    background 0.22s ease;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
   position: relative;
   outline: none;
-  overflow: hidden;
-}
-
-/* Animated left-edge accent line */
-.commitment-card-compact::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 3px;
-  background: var(--brand-primary);
-  transform: scaleY(0);
-  transform-origin: bottom;
-  transition: transform 0.25s ease;
-  border-radius: 0 3px 3px 0;
 }
 
 .commitment-card-compact:hover,
 .commitment-card-compact:focus-visible {
-  transform: translateY(-5px);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22), 0 2px 8px rgba(225,29,72,0.12);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   border-color: var(--brand-primary);
-  background: var(--bg-surface-hover);
-}
-
-.commitment-card-compact:hover::before,
-.commitment-card-compact:focus-visible::before {
-  transform: scaleY(1);
 }
 
 .commitment-card-compact:active {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  transform: translateY(-1px);
 }
 
 /* Top row */
@@ -179,12 +154,12 @@
 .ccc-arrow {
   font-size: 1rem;
   color: var(--text-muted);
-  transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), color 0.2s;
+  transition: transform 0.2s, color 0.2s;
 }
 
 .commitment-card-compact:hover .ccc-arrow,
 .commitment-card-compact:focus-visible .ccc-arrow {
-  transform: translateX(6px);
+  transform: translateX(4px);
   color: var(--brand-primary);
 }
 
@@ -204,13 +179,6 @@
 .commitment-card-compact.needs-checkin {
   border-color: rgba(139, 92, 246, 0.4);
   box-shadow: 0 4px 20px rgba(139, 92, 246, 0.1);
-}
-.commitment-card-compact.needs-checkin:hover {
-  box-shadow: 0 16px 40px rgba(139,92,246,0.2), 0 2px 8px rgba(139,92,246,0.15);
-  border-color: #a78bfa;
-}
-.commitment-card-compact.needs-checkin::before {
-  background: #a78bfa;
 }
 
 /* Light-theme overrides */

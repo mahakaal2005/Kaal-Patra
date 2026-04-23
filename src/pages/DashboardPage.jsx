@@ -28,7 +28,7 @@ const DashboardPage = () => {
           <IntegrityScore />
           <IntegrityStreak />
         </aside>
-
+        
         <div className="dashboard-main">
           <DailyAlertBanner />
           <CommitmentForm />
